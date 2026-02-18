@@ -11,6 +11,8 @@ class User(models.Model):
     nid = models.CharField(max_length=16, validators=[validate_nid])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    assigned_sector = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.email
+

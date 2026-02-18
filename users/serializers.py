@@ -7,7 +7,8 @@ from django.core.exceptions import ValidationError
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone_number', 'password', 'type', 'nid', 'created_at', 'updated_at']
+        fields = ['id', 'phone_number', 'type', "email", "assigned_sector"]
+
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -25,7 +26,7 @@ class NIDSerializer(serializers.Serializer):
         except ValidationError as e:
             raise serializers.ValidationError({
                 "valid": False,
-                "message": str(e)
+                "message": str(e.message)
             })
 
         return nid
