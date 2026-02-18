@@ -24,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-k%fdx=jc9rm=ocayia5!cqf5!wj)@m3v8=m7#%-6zo7uwl#1f1"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+print(os.getenv("API_DEBUG"))
 DEBUG = os.getenv("API_DEBUG", "false").lower() == "true"
 
 ALLOWED_HOSTS = []
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "users",
 ]
 
 MIDDLEWARE = [
