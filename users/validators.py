@@ -17,12 +17,12 @@ def validate_phone_number(phone_number):
     """
     Validates a phone number:
     - Must be exactly 12 digits
-    - Must NOT start with 250
+    - Must start with 250
     """
-    pattern = r'^(?!250)\d{12}$'
+    pattern = r'^(?=250)\d{12}$'
     if not re.match(pattern, phone_number):
         raise ValidationError(
-            "Phone number must be 12 digits and must not start with 250"
+            "Phone number must be 12 digits and must start with 250"
         )
     return phone_number
-    
+
