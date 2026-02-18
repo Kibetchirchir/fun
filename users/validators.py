@@ -1,11 +1,28 @@
-def validate_nid(nid):
-    if len(nid) != 16:
-        raise ValueError("NID must be 16 digits")
-    return nid
+import re
+from django.core.exceptions import ValidationError
 
+
+def validate_nid(nid):
+    """
+    Validates a NID:
+    - Must be exactly 16 digits
+    """
+    pattern = r'^\d{16}$'
+    if not re.match(pattern, nid):
+        raise ValidationError(
+            "NID must be 16 digits"
+        )
+    return nid
 def validate_phone_number(phone_number):
-    if len(phone_number) != 12:
-        raise ValueError("Phone number must be 12 digits")
-    if phone_number.startswith("250"):
-        raise ValueError("Phone number must not start with 250")
+    """
+    Validates a phone number:
+    - Must be exactly 12 digits
+    - Must NOT start with 250
+    """
+    pattern = r'^(?!250)\d{12}$'
+    if not re.match(pattern, phone_number):
+        raise ValidationError(
+            "Phone number must be 12 digits and must not start with 250"
+        )
     return phone_number
+    
