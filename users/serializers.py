@@ -7,9 +7,14 @@ from django.contrib.auth.hashers import make_password
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    nid = serializers.CharField(required=False)
     class Meta:
         model = User
         fields = ['id', 'phone_number', 'type', "email", "assigned_sector", "password"]
+        extra_kwargs = {
+            "password": {"write_only": True}
+        }
+
 
 
       
@@ -37,3 +42,12 @@ class NIDSerializer(serializers.Serializer):
             })
 
         return nid
+
+class AgentOnboardSerializer(UserSerializer):
+    nid = serializers.CharField(required=True)
+    password = serializers.CharField(required=False, write_only=True)
+    
+    def create(self, validated_data):
+        validated_data["type"] = "agent"
+        return User.objects.create(**validated_data)
+        
