@@ -179,6 +179,25 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Shipment API",
     "DESCRIPTION": "API documentation for Shipment service",
     "VERSION": "1.0.0",
+    "SECURITY": [
+        {"BearerAuth": []},  
+        {"CookieAuth": []}, 
+    ],
+    "COMPONENT_SPLIT_REQUEST": True,
+    "COMPONENTS": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "CookieAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "sessionid"
+            }
+        }
+    }
 }
 
 AUTH_USER_MODEL = 'users.User'
