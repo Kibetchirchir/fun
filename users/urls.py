@@ -18,4 +18,5 @@ urlpatterns = [
     path('identity/kyc/nid/', VerifyNIDView.as_view(), name='verify-nid'),
     path('identity/recover/initiate/', InitiatePasswordRecoveryView.as_view(), name='initiate-password-recovery'),
     path('identity/recover/verify/', VerifyPasswordRecoveryView.as_view(), name='verify-password-recovery'),
+    path('identity/kyc/status/', GetUserView.as_view(), name='get-kyc-status'),
 ]

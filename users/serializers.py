@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
     yob = serializers.CharField(required=True, write_only=True)
     class Meta:
         model = User
-        fields = ['id', 'phone_number', 'type', "email", "assigned_sector", "password", "nid", "yob"]
+        fields = ['id', 'phone_number', 'type', "email", "assigned_sector", "password", "nid", "yob", "kyc_status"]
         extra_kwargs = {
             "password": {"write_only": True}
         }

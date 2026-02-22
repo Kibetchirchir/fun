@@ -43,4 +43,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    @property
+    def kyc_status(self):
+        return {
+            "is_verified": self.is_verified,
+            "is_nid_verified": self.is_nid_verified,
+        }
+
 
