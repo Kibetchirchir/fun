@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import User
-from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer, VerifyOTPSerializer, InitiatePasswordRecoverySerializer
+from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer, VerifyOTPSerializer, InitiatePasswordRecoverySerializer, VerifyPasswordRecoverySerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.throttling import ScopedRateThrottle
@@ -168,3 +168,24 @@ class InitiatePasswordRecoveryView(APIView):
         cache_set(f"otp_{email}", otp, ex=60*5)
         print(f"OTP: {otp}")
         return Response({"detail": "Password recovery initiated successfully"}, status=status.HTTP_200_OK)
+
+class VerifyPasswordRecoveryView(APIView):
+    permission_classes = []
+    queryset = None
+    serializer_class = VerifyPasswordRecoverySerializer
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        otp = serializer.validated_data["otp"]
+        new_password = serializer.validated_data["new_password"]
+        cached_otp = cache_get(f"otp_{email}")
+        if not cached_otp:
+            return Response({"detail": "OTP expired"}, status=status.HTTP_400_BAD_REQUEST)
+        if str(cached_otp) != str(otp):
+            return Response({"detail": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(email=email)
+        user.set_password(new_password)
+        user.save()
+        cache_delete(f"otp_{email}")
+        return Response({"detail": "Password recovery verified successfully"}, status=status.HTTP_200_OK)
