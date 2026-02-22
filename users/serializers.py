@@ -3,6 +3,7 @@ from .models import User
 from .validators import validate_nid
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -51,3 +52,14 @@ class AgentOnboardSerializer(UserSerializer):
         validated_data["type"] = "agent"
         return User.objects.create(**validated_data)
         
+class LoginSessionSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        user = authenticate(request=self.context.get('request'), email=email, password=password)
+        if not user:
+            raise serializers.ValidationError("Invalid credentials")
+        return attrs
