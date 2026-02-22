@@ -57,16 +57,11 @@ class VerifyNIDView(APIView):
         return Response({"message": "NID is valid"}, status=status.HTTP_200_OK)
 
 class GetUserView(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     queryset = None
     serializer_class = UserSerializer
     def get(self, request):
-        user = request.headers.get("email")
-        if not user:
-            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.get(email=user)
-        if not user:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
