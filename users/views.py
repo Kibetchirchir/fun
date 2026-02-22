@@ -6,6 +6,7 @@ from .models import User
 from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
+from rest_framework.throttling import ScopedRateThrottle
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -61,6 +62,8 @@ class LoginSessionView(APIView):
     permission_classes = [AllowAny]
     queryset = None
     serializer_class = LoginSessionSerializer
+    throttle_scope = "login"
+    throttle_classes = [ScopedRateThrottle]
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
