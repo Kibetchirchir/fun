@@ -25,4 +25,5 @@ urlpatterns = [
     path("django-rq/", include("django_rq.urls")),
     path("api/shipments/domestic/", include("domestic.urls")),
     path("api/shipments/international/", include("international.urls")),
+    path("api/shipments/", include("shipments.urls")),
 ]
