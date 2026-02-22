@@ -15,4 +15,5 @@ urlpatterns = [
     path('auth/password/change/', PasswordChangeView.as_view(), name='password-change'),
     path('identity/register/', UserViewSet.as_view({'post': 'create'}), name='identity-register'),
     path('identity/verify-otp/', VerifyOTPView.as_view(), name='verify-otp'),
+    path('identity/kyc/nid/', VerifyNIDView.as_view(), name='verify-nid'),
 ]

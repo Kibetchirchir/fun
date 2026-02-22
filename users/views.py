@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.throttling import ScopedRateThrottle
 from utils.redis import cache_set, cache_get, cache_delete
 import random
+from .validators import validate_nid
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -40,12 +41,19 @@ class AgentOnboardView(viewsets.ModelViewSet):
 
 
 class VerifyNIDView(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     queryset = None
     serializer_class = NIDSerializer
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        user = request.user
+        print(f"User: {user.yob}")
+        print(f"NID: {serializer.validated_data["nid"]}")
+        try:
+            validate_nid(serializer.validated_data["nid"], user.yob)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "NID is valid"}, status=status.HTTP_200_OK)
 
 class GetUserView(APIView):

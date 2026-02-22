@@ -34,8 +34,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
     assigned_sector = models.CharField(max_length=20, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
-    last_otp_sent = models.DateTimeField(null=True, blank=True)
-    otp = models.CharField(max_length=6, null=True, blank=True)
+    is_nid_verified = models.BooleanField(default=False)
+    yob = models.CharField(max_length=4, null=True, blank=True)
     objects = UserManager()
 
     USERNAME_FIELD = "email"       
