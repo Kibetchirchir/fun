@@ -25,3 +25,20 @@ class ShipmentUpdateStatusSerializer(serializers.ModelSerializer):
         if shipment_status not in ["pending", "in_transit", "delivered"]:
             raise serializers.ValidationError("Invalid shipment status")
         return shipment_status
+
+
+class ShipmentUpdateBulkStatusSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField(), required=True)
+    status = serializers.CharField(max_length=255, required=True)
+    class Meta:
+        fields = ['ids', 'status']
+    
+    def validate_ids(self, ids):
+        if not ids:
+            raise serializers.ValidationError("ids are required")
+        return ids
+    
+    def validate_status(self, status):
+        if status not in ["pending", "in_transit", "delivered"]:
+            raise serializers.ValidationError("Invalid shipment status")
+        return status
