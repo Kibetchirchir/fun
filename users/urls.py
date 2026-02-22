@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import UserViewSet, VerifyNIDView, GetUserView, AgentOnboardView, LoginSessionView, LogoutSessionView
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('auth/register/', UserViewSet.as_view({'post': 'create'}), name='register'),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('auth/login/session/', LoginSessionView.as_view(), name='login-session'),
     path('auth/logout/', LogoutSessionView.as_view(), name='logout-session'),
     path('auth/token/obtain/', TokenObtainPairView.as_view(), name='token-obtain-pair'),
+    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
 ]
