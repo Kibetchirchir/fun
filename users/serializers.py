@@ -10,9 +10,10 @@ import random
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     nid = serializers.CharField(required=False, write_only=True)
+    yob = serializers.CharField(required=True, write_only=True)
     class Meta:
         model = User
-        fields = ['id', 'phone_number', 'type', "email", "assigned_sector", "password", "nid"]
+        fields = ['id', 'phone_number', 'type', "email", "assigned_sector", "password", "nid", "yob"]
         extra_kwargs = {
             "password": {"write_only": True}
         }
@@ -25,6 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
         if len(password) < 8:
             raise serializers.ValidationError("Password must be at least 8 characters long")
         return password
+    
+    def validate_nid(self, nid):
+        validate_nid(nid, self.initial_data.get('yob'))
+        return nid
 
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data["password"])
@@ -33,17 +38,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class NIDSerializer(serializers.Serializer):
     nid = serializers.CharField(required=True)
-
-    def validate_nid(self, nid):
-        try:
-            validate_nid(nid)
-        except ValidationError as e:
-            raise serializers.ValidationError({
-                "valid": False,
-                "message": str(e.message)
-            })
-
-        return nid
 
 class AgentOnboardSerializer(UserSerializer):
     nid = serializers.CharField(required=True)
