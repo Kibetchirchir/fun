@@ -1,3 +1,7 @@
 from django.db import models
+from shipments.models import Shipment
 
-# Create your models here.
+
+class InternationalShipment(Shipment):
+    class Meta:
+        verbose_name = "International Shipment"

@@ -23,4 +23,6 @@ urlpatterns = [
     path("api/health/", include("health.urls")),
     path("api/users/", include("users.urls")),
     path("django-rq/", include("django_rq.urls")),
+    path("api/shipments/domestic/", include("domestic.urls")),
+    path("api/shipments/international/", include("international.urls")),
 ]

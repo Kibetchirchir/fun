@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_rq",
     "users",
+    "shipments",
+    "international",
+    "domestic",
 ]
 
 MIDDLEWARE = [
@@ -126,8 +129,8 @@ DEFAULT_QUEUE_NAME = os.environ.get("API_DEFAULT_QUEUE_NAME", "default")
 PRIORITY_QUEUE_NAME = os.environ.get("API_PRIORITY_QUEUE_NAME", "priority")
 
 REDIS_CONNECTION = {
-    "HOST": os.environ["API_REDIS_HOST"],
-    "PORT": os.environ["API_REDIS_PORT"],
+    "HOST": os.environ.get("API_REDIS_HOST", "localhost"),
+    "PORT": os.environ.get("API_REDIS_PORT", 6379),
     "DB": 0,
     "DEFAULT_TIMEOUT": 360,
 }
