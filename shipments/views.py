@@ -5,6 +5,9 @@ from rest_framework import status
 from shipments.models import Shipment
 from shipments.serializers import ShipmentUpdateStatusSerializer, ShipmentUpdateBulkStatusSerializer, ShipmentSerializer
 from shipments.utils import update_bulk_shipment_status_queue
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
+
 class ShipmentUpdateStatusView(viewsets.ModelViewSet):
     permission_classes = []
     queryset = Shipment.objects.all()
@@ -34,10 +37,9 @@ class ShipmentView(viewsets.ModelViewSet):
     permission_classes = []
     queryset = Shipment.objects.all()
     serializer_class = ShipmentSerializer
-    def list(self, request):
-        shipments = self.queryset.all()
-        serializer = self.serializer_class(shipments, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['shipment_status', 'created_at', 'updated_at', 'shipment_type', 'country_of_origin', 'country_of_destination', 'location_of_origin', 'location_of_destination']
+    search_fields = ['phone_number', 'tin', 'passport_number']
     
     def retrieve(self, request, pk=None):
         try:

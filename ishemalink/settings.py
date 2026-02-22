@@ -146,3 +146,11 @@ redis_client = redis.Redis(
     port=REDIS_CONNECTION["PORT"],
     db=REDIS_CONNECTION["DB"]
 )
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+}
