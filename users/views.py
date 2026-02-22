@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import User
-from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer, VerifyOTPSerializer
+from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer, VerifyOTPSerializer, InitiatePasswordRecoverySerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.throttling import ScopedRateThrottle
@@ -152,3 +152,19 @@ class VerifyOTPView(APIView):
         user.save()
         cache_delete(f"otp_{email}")
         return Response({"detail": "OTP verified successfully"}, status=status.HTTP_200_OK)
+
+class InitiatePasswordRecoveryView(APIView):
+    permission_classes = []
+    queryset = None
+    serializer_class = InitiatePasswordRecoverySerializer
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        user = User.objects.get(email=email)
+        if not user:
+            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        otp = random.randint(100000, 999999)
+        cache_set(f"otp_{email}", otp, ex=60*5)
+        print(f"OTP: {otp}")
+        return Response({"detail": "Password recovery initiated successfully"}, status=status.HTTP_200_OK)

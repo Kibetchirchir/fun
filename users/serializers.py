@@ -77,3 +77,10 @@ class VerifyOTPSerializer(serializers.Serializer):
         email = attrs.get('email')
         otp = attrs.get('otp')
         return attrs
+
+class InitiatePasswordRecoverySerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        return attrs
