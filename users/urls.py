@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserViewSet, VerifyNIDView, GetUserView, AgentOnboardView, LoginSessionView, LogoutSessionView, WhoAmIView, PasswordChangeView
+from .views import UserViewSet, VerifyNIDView, GetUserView, AgentOnboardView, LoginSessionView, LogoutSessionView, WhoAmIView, PasswordChangeView, VerifyOTPView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
     path('auth/whoami/', WhoAmIView.as_view(), name='whoami'),
     path('auth/password/change/', PasswordChangeView.as_view(), name='password-change'),
     path('identity/register/', UserViewSet.as_view({'post': 'create'}), name='identity-register'),
+    path('identity/verify-otp/', VerifyOTPView.as_view(), name='verify-otp'),
 ]

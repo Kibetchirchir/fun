@@ -3,11 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import User
-from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer
+from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer, VerifyOTPSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.throttling import ScopedRateThrottle
-
+from utils.redis import cache_set, cache_get, cache_delete
+import random
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -17,6 +18,9 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        otp = random.randint(100000, 999999)
+        cache_set(f"otp_{serializer.data['email']}", otp, ex=60*5)
+        print(f"OTP: {otp}")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
@@ -119,3 +123,24 @@ class PasswordChangeView(APIView):
         user.set_password(new_password)
         user.save()
         return Response({"detail": "Password changed successfully"}, status=status.HTTP_200_OK)
+
+class VerifyOTPView(APIView):
+    permission_classes = []
+    queryset = None
+    serializer_class = VerifyOTPSerializer
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        otp = serializer.validated_data["otp"]
+        cached_otp = cache_get(f"otp_{email}")
+        print(f"Cached OTP: {cached_otp} and OTP: {otp}")
+        if not cached_otp:
+            return Response({"detail": "OTP expired"}, status=status.HTTP_400_BAD_REQUEST)
+        if str(cached_otp) != str(otp):
+            return Response({"detail": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(email=email)
+        user.is_verified = True
+        user.save()
+        cache_delete(f"otp_{email}")
+        return Response({"detail": "OTP verified successfully"}, status=status.HTTP_200_OK)
