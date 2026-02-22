@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import UserViewSet, verify_nid, get_user, AgentOnboardView
+from .views import UserViewSet, VerifyNIDView, GetUserView, AgentOnboardView
 
 urlpatterns = [
     path('auth/register/', UserViewSet.as_view({'post': 'create'}), name='register'),
-    path('auth/verify-nid/', verify_nid, name='verify-nid'),
-    path('auth/me/', get_user, name='get-user'),
+    path('auth/verify-nid/', VerifyNIDView.as_view(), name='verify-nid'),
+    path('auth/me/', GetUserView.as_view(), name='get-user'),
     path('auth/agents/onboard/', AgentOnboardView.as_view({'post': 'create'}), name='agent-onboard'),
 
 ]
