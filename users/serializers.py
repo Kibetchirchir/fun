@@ -84,3 +84,6 @@ class InitiatePasswordRecoverySerializer(serializers.Serializer):
     def validate(self, attrs):
         email = attrs.get('email')
         return attrs
+
+class VerifyPasswordRecoverySerializer(ResetPasswordSerializer):
+    otp = serializers.CharField(required=True)
