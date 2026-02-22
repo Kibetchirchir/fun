@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
-
+import redis
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,11 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-k%fdx=jc9rm=ocayia5!cqf5!wj)@m3v8=m7#%-6zo7uwl#1f1"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-print(os.getenv("API_DEBUG"))
 DEBUG = os.getenv("API_DEBUG", "false").lower() == "true"
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -44,6 +42,7 @@ INSTALLED_APPS = [
     "shipments",
     "international",
     "domestic",
+    "pricing",
 ]
 
 MIDDLEWARE = [
@@ -135,10 +134,15 @@ REDIS_CONNECTION = {
     "DEFAULT_TIMEOUT": 360,
 }
 
-
 RQ_QUEUES = {
     DEFAULT_QUEUE_NAME: REDIS_CONNECTION.copy(),
     PRIORITY_QUEUE_NAME: REDIS_CONNECTION.copy(),
 }
 
 RQ_QUEUES[DEFAULT_QUEUE_NAME]["DEFAULT"] = True
+
+redis_client = redis.Redis(
+    host=REDIS_CONNECTION["HOST"],
+    port=REDIS_CONNECTION["PORT"],
+    db=REDIS_CONNECTION["DB"]
+)

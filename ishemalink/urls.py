@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from pricing.views import PricingView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,4 +27,6 @@ urlpatterns = [
     path("api/shipments/domestic/", include("domestic.urls")),
     path("api/shipments/international/", include("international.urls")),
     path("api/shipments/", include("shipments.urls")),
+    path("api/pricing/", include("pricing.urls")),
+    path("api/admin/cache/clear-tarrifs/", PricingView.as_view({'post': 'clear_tarrifs'}), name='pricing-clear-tarrifs'),
 ]
