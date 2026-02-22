@@ -4,6 +4,7 @@ from .validators import validate_nid
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
+import random
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -72,4 +73,13 @@ class ResetPasswordSerializer(serializers.Serializer):
         email = attrs.get('email')
         password = attrs.get('password')
         new_password = attrs.get('new_password')
+        return attrs
+
+class VerifyOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    otp = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        otp = attrs.get('otp')
         return attrs

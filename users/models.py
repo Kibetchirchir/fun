@@ -1,6 +1,7 @@
 from django.db import models
 from .validators import validate_nid, validate_phone_number
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from utils.notification import queue_notification
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
