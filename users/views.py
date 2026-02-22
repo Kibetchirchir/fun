@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import User
 from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer
 from rest_framework.views import APIView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -79,3 +79,10 @@ class LoginSessionView(APIView):
             "email": user.email,
             "type": user.type,
         }, status=status.HTTP_200_OK)
+
+class LogoutSessionView(APIView):
+    permission_classes = [IsAuthenticated]
+   
+    def get(self, request):
+        logout(request)
+        return Response({"detail": "Logged out successfully"}, status=status.HTTP_200_OK)
