@@ -63,3 +63,13 @@ class LoginSessionSerializer(serializers.Serializer):
         if not user:
             raise serializers.ValidationError("Invalid credentials")
         return attrs
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        new_password = attrs.get('new_password')
+        return attrs

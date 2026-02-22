@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import User
-from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer
+from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
 
@@ -95,3 +95,24 @@ class WhoAmIView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PasswordChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+    queryset = None
+    serializer_class = ResetPasswordSerializer
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+        password = serializer.validated_data["password"]
+        new_password = serializer.validated_data["new_password"]
+
+        user = request.user
+        if not user.check_password(password):
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({"detail": "Password changed successfully"}, status=status.HTTP_200_OK)
