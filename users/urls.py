@@ -13,4 +13,5 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     path('auth/whoami/', WhoAmIView.as_view(), name='whoami'),
     path('auth/password/change/', PasswordChangeView.as_view(), name='password-change'),
+    path('identity/register/', UserViewSet.as_view({'post': 'create'}), name='identity-register'),
 ]
