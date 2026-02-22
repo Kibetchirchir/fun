@@ -10,3 +10,26 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    depends_on:
+      - redis
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+  priority_worker:
+    build: .
+    command: python manage.py rqworker priority --with-scheduler
+    env_file: .env
+    environment:
+      - QUEUE=priority
+    volumes:
+      - .:/app/
+    depends_on:
+      - redis
+      - web
+
+volumes:
+  redis_data:

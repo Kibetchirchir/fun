@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_rq",
     "users",
 ]
 
@@ -118,3 +119,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+ # Django-rq
+
+
+DEFAULT_QUEUE_NAME = os.environ.get("API_DEFAULT_QUEUE_NAME", "default")
+PRIORITY_QUEUE_NAME = os.environ.get("API_PRIORITY_QUEUE_NAME", "priority")
+
+REDIS_CONNECTION = {
+    "HOST": os.environ["API_REDIS_HOST"],
+    "PORT": os.environ["API_REDIS_PORT"],
+    "DB": 0,
+    "DEFAULT_TIMEOUT": 360,
+}
+
+
+RQ_QUEUES = {
+    DEFAULT_QUEUE_NAME: REDIS_CONNECTION.copy(),
+    PRIORITY_QUEUE_NAME: REDIS_CONNECTION.copy(),
+}
+
+RQ_QUEUES[DEFAULT_QUEUE_NAME]["DEFAULT"] = True
