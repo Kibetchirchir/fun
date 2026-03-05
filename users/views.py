@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import User
+from .models import User, UserConstentsDoc
 from .serializers import UserSerializer, NIDSerializer, AgentOnboardSerializer, LoginSessionSerializer, ResetPasswordSerializer, VerifyOTPSerializer, InitiatePasswordRecoverySerializer, VerifyPasswordRecoverySerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login, logout
@@ -64,7 +64,18 @@ class GetUserView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
+    def anonymize(self, request):
+        user = request.user
+        user.nid = None
+        user.tin = None
+        user.save()
+        return Response({"message": "User data anonymized successfully"}, status=status.HTTP_200_OK)
+    
+    def get_documents(self, request):
+        user = request.user
+        documents = UserConstentsDoc.objects.filter(user=user)
+        return Response({"documents": documents.map(lambda x: x.document.url)}, status=status.HTTP_200_OK)
 class LoginSessionView(APIView):
     permission_classes = [AllowAny]
     queryset = None

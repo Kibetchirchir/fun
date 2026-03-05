@@ -2,7 +2,7 @@ from django.db import models
 from .validators import validate_nid, validate_phone_number
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from utils.notification import queue_notification
-
+from utils.encryption import EncryptedCharField
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -29,7 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=20, validators=[validate_phone_number])
     password = models.CharField(max_length=255)
     type = models.CharField(max_length=20, choices=[("admin", "Admin"), ("agent", "Agent"), ("customer", "Customer")])
-    nid = models.CharField(max_length=16, validators=[validate_nid])
+    nid = EncryptedCharField(max_length=16, validators=[validate_nid])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     assigned_sector = models.CharField(max_length=20, null=True, blank=True)
@@ -37,7 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_nid_verified = models.BooleanField(default=False)
     yob = models.CharField(max_length=4, null=True, blank=True)
     objects = UserManager()
-    tin = models.CharField(max_length=255, null=True, blank=True)
+    tin = EncryptedCharField(max_length=255, null=True, blank=True)
 
     USERNAME_FIELD = "email"       
     REQUIRED_FIELDS = ["type"] 
@@ -53,3 +53,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         }
 
 
+class UserConstentsDoc(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    document = models.FileField(upload_to='documents/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    accepted_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.user.email

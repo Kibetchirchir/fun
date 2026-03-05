@@ -208,3 +208,7 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+INFERNET_KEY = os.environ.get("API_INFERNET_KEY", "")
+
+print(">>>>>>>>>>", INFERNET_KEY)
