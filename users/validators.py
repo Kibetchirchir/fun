@@ -2,7 +2,7 @@ import re
 from django.core.exceptions import ValidationError
 
 
-def validate_nid(nid):
+def validate_nid(nid, yob):
     """
     Validates a NID:
     - Must be exactly 16 digits
@@ -11,6 +11,12 @@ def validate_nid(nid):
     if not re.match(pattern, nid):
         raise ValidationError(
             "NID must be 16 digits"
+        )
+    yob_id = nid[0:4]
+
+    if str(yob_id) != str(yob):
+        raise ValidationError(
+            "Year of birth does not match the NID"
         )
     return nid
 def validate_phone_number(phone_number):
