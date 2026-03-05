@@ -37,6 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_nid_verified = models.BooleanField(default=False)
     yob = models.CharField(max_length=4, null=True, blank=True)
     objects = UserManager()
+    tin = models.CharField(max_length=255, null=True, blank=True)
 
     USERNAME_FIELD = "email"       
     REQUIRED_FIELDS = ["type"] 
