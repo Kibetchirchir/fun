@@ -19,4 +19,7 @@ urlpatterns = [
     path('identity/recover/initiate/', InitiatePasswordRecoveryView.as_view(), name='initiate-password-recovery'),
     path('identity/recover/verify/', VerifyPasswordRecoveryView.as_view(), name='verify-password-recovery'),
     path('identity/kyc/status/', GetUserView.as_view(), name='get-kyc-status'),
+    path('privacy/my-data/', GetUserView.as_view(), name='get-my-data'),
+    path('privacy/my-data/anonymize/', GetUserView.as_view(), name='download-my-data'),
+    path('privacy/my-data/documents/', GetUserView.as_view(), name='get-my-documents'),
 ]

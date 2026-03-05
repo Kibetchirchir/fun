@@ -34,5 +34,6 @@ urlpatterns = [
     path("api/shipments/international/", include("international.urls")),
     path("api/shipments/", include("shipments.urls")),
     path("api/pricing/", include("pricing.urls")),
-    path("api/admin/cache/clear-tarrifs/", PricingView.as_view({'post': 'clear_tarrifs'}), name='pricing-clear-tarrifs')
+    path("api/admin/cache/clear-tarrifs/", PricingView.as_view({'post': 'clear_tarrifs'}), name='pricing-clear-tarrifs'),
+    path("api/privacy/", include("users.urls")),
 ]
