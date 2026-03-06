@@ -210,5 +210,3 @@ SIMPLE_JWT = {
 }
 
 INFERNET_KEY = os.environ.get("API_INFERNET_KEY", "")
-
-print(">>>>>>>>>>", INFERNET_KEY)
